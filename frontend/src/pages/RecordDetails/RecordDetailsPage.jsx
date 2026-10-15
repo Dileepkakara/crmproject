@@ -45,6 +45,8 @@ export default function RecordDetailsPage() {
 
   const printableFields = {
     followups: ['id', 'contact', 'company', 'leadId', 'dueDate', 'type', 'status', 'assignee', 'notes'],
+    quotations: ['id', 'title', 'client', 'clientId', 'issueDate', 'validUntil', 'amount', 'version', 'status', 'owner'],
+    agreements: ['id', 'client', 'clientId', 'quotationId', 'project', 'version', 'createdAt', 'acceptedAt', 'status'],
     projects: ['id', 'name', 'client', 'manager', 'startDate', 'deadline', 'progress', 'status'],
     tasks: ['id', 'title', 'project', 'assignee', 'priority', 'dueDate', 'status', 'description', 'notes'],
   }

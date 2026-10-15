@@ -311,6 +311,7 @@ export default function ResourceRecordsPage({ resource }) {
     notify('CSV export downloaded.')
   }
 
+  const supportsPrintList = ['quotations', 'invoices', 'agreements'].includes(resource)
   const summary = config.summary ? config.summary.map((item) => ({
     label: item === 'Total leads' ? item : `${item} leads`,
     value: item === 'Total leads' ? records.length : records.filter((record) => record.status === item).length,
@@ -323,9 +324,10 @@ export default function ResourceRecordsPage({ resource }) {
     ? config.fields.filter(([key]) => invoiceFinancialFields.includes(key))
     : []
 
-  return <div className={`page${resource === 'followups' ? ' followups-page' : ''}`}>
+  return <div className={`page${resource === 'followups' ? ' followups-page' : ''}${supportsPrintList ? ' resource-print-page' : ''}`}>
     <PageHeader title={config.title} description={config.description} actions={<>
       <Button variant="secondary" onClick={exportCsv}><Download size={16} /> Export</Button>
+      {supportsPrintList && <Button className="no-print" variant="secondary" disabled={loading || filtered.length === 0} onClick={() => window.print()}><Printer size={16} /> Print list</Button>}
       {resource === 'followups' && <Button className="no-print" variant="secondary" disabled={loading || filtered.length === 0} onClick={() => window.print()}><Printer size={16} /> Print filtered list</Button>}
       {({
         leads: can('leads.create'), followups: can('followups.create'), clients: can('clients.manage'), quotations: can('quotations.create'),
@@ -370,6 +372,14 @@ export default function ResourceRecordsPage({ resource }) {
       <h1>Follow-ups</h1>
       <table className="print-invoice-table"><thead><tr><th>Contact</th><th>Company</th><th>Lead</th><th>Scheduled</th><th>Type</th><th>Status</th><th>Assigned to</th><th>Notes</th></tr></thead>
         <tbody>{filtered.map((item) => <tr key={item.id}><td>{item.contact || '—'}</td><td>{item.company || '—'}</td><td>{item.leadId || '—'}</td><td>{formatDate(item.dueDate)}</td><td>{item.type || '—'}</td><td>{item.status || '—'}</td><td>{item.assignee || '—'}</td><td>{item.notes || '—'}</td></tr>)}</tbody>
+      </table>
+    </section>}
+    {supportsPrintList && <section className="print-only resource-list-print">
+      <header className="print-document-header"><div className="brand-mark">D</div><div><strong>Design Blocks</strong><span>CRM &amp; Project Management</span></div></header>
+      <h1>{config.title}</h1>
+      <p>Printed {formatDate(new Date().toISOString().slice(0, 10))}</p>
+      <table className="print-invoice-table"><thead><tr>{config.columns.map(([, label]) => <th key={label}>{label}</th>)}</tr></thead>
+        <tbody>{filtered.map((record) => <tr key={record.id}>{config.columns.map(([key]) => <td key={key}>{displayValue(record, key, resource, payments)}</td>)}</tr>)}</tbody>
       </table>
     </section>}
     {modal && <Modal title={editing ? `Edit ${config.title.slice(0, -1).toLowerCase()}` : config.action} description="Changes are saved to this browser’s demo workspace." onClose={() => setModal(false)} wide={config.fields.length > 7}>

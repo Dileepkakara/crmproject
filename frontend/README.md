@@ -98,6 +98,7 @@ Endpoint paths are centralized in `src/api/endpoints.js`. Backend mode uses HTTP
 - Invoice forms support multiple description/quantity/rate rows; totals are calculated as subtotal minus discount plus tax. Older total-only invoices keep their saved total and identify unavailable line-item detail when printed.
 - Notification read state, dashboard/report summaries, and client-selected portal data use current mock records.
 - Browser-native printing is available for individual invoices, lead/client/record details, filtered follow-ups, dashboard summaries, and reports. Invoice printouts use recorded company preferences and transaction data; older invoices without line-item details clearly show that the breakdown is unavailable.
+- Quotations, invoices, and work orders can print either an individual record or the currently filtered module list using the browser’s print dialog.
 - Notifications, messaging, client approval, document delivery, and bank/payment verification are not connected to external services. Export is CSV; print-to-PDF uses the browser’s native print dialog.
 - Role and portal views are previews only. Production identity, ownership enforcement, and access control must be implemented on the backend.
 

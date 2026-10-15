@@ -517,5 +517,8 @@ a { color: inherit; text-decoration: none; }
   .invoice-payment-details { break-inside: avoid; }
   .filtered-followups-print h1 { font-size: 21pt !important; }
   .followups-page > :not(.filtered-followups-print) { display: none !important; }
+  .resource-print-page > :not(.resource-list-print) { display: none !important; }
+  .resource-list-print h1 { font-size: 21pt !important; }
+  .resource-list-print > p { margin: -5px 0 18px; color: #6b7280 !important; font-size: 9pt !important; }
   .badge, .status-select { color: #111827 !important; background: #fff !important; border: 1px solid #9ca3af !important; }
 }

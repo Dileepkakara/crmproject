@@ -2,6 +2,12 @@ import { formatCurrency } from '../../utils/formatters'
 import { amountInWords } from '../../utils/amountInWords'
 import './salesDocuments.css'
 
+const referenceCompanyDetails = {
+  gstin: '37AKOPY6766H1Z4',
+  address: 'Flat No 406, 5th Floor, Botcha Square, Madhavadhara,\nVISAKHAPATNAM-530007',
+  bankDetails: 'UNION BANK OF INDIA , MURALI NAGAR,VISAKHAPATNAM\nA/C NUMBER- 753601010050187 ; IFSC: UBIN0810746\nUPI ID: designblocks@ybl',
+}
+
 function formatDocumentDate(value) {
   if (!value) return '—'
   const [year, month, day] = String(value).slice(0, 10).split('-')
@@ -21,9 +27,11 @@ function PartyDetails({ title, name, company, address, gstin, email, phone }) {
   </section>
 }
 
-function CompanyBrand({ name }) {
+function CompanyBrand({ name, useProvidedLogo }) {
   return <div className="sales-doc-company">
-    <div className="sales-doc-brand" role="img" aria-label={`${name} logo`}>D</div>
+    {useProvidedLogo
+      ? <img className="sales-doc-logo" src="/design-blocks-logo.png" alt={`${name} logo`} />
+      : <div className="sales-doc-brand" role="img" aria-label={`${name} logo`}>D</div>}
   </div>
 }
 
@@ -32,6 +40,7 @@ export default function SalesDocument({
   paid = 0, balance = 0, payments = [],
 }) {
   const isWorkOrder = kind === 'Work Order'
+  const isQuotationOrInvoice = kind === 'Quotation' || kind === 'Invoice'
   const items = record.items?.length ? record.items
     : record.lineItems?.length ? record.lineItems
       : record.description && record.quantity !== undefined && record.rate !== undefined
@@ -56,14 +65,21 @@ export default function SalesDocument({
   const companyDetails = {
     name: preferences.companyName || 'Design Blocks',
     subtitle: preferences.subtitle,
-    address: record.companyAddress || preferences.companyAddress,
-    gstin: record.companyGstin || preferences.companyGstin || preferences.gstin,
-    bankDetails: record.bankDetails || preferences.bankDetails,
+    address: record.companyAddress || preferences.companyAddress || (isQuotationOrInvoice ? referenceCompanyDetails.address : ''),
+    gstin: record.companyGstin || preferences.companyGstin || preferences.gstin || (isQuotationOrInvoice ? referenceCompanyDetails.gstin : ''),
+    bankDetails: record.bankDetails || preferences.bankDetails || (isQuotationOrInvoice ? referenceCompanyDetails.bankDetails : ''),
   }
   const number = record.number || record.id
   const date = record.issueDate || record.createdAt
   const terms = record.terms || preferences.documentTerms
   const hasNoItemDetails = !items.length && !isWorkOrder
+  const metadata = <>
+    <strong>{kind} No: {number || 'Draft'}</strong>
+    <span>Date: {formatDocumentDate(date)}</span>
+    {record.dueDate && <span>Due Date: {formatDocumentDate(record.dueDate)}</span>}
+    {record.validUntil && <span>Valid Until: {formatDocumentDate(record.validUntil)}</span>}
+    {record.quotationId && <span>Quotation: {record.quotationId}</span>}
+  </>
 
   return <section className="sales-document-preview">
     <div className="sales-doc-actions no-print">
@@ -71,8 +87,8 @@ export default function SalesDocument({
       {canEdit && onEdit && <button type="button" className="sales-doc-button secondary" onClick={onEdit}>Edit</button>}
       {onPrint && <button type="button" className="sales-doc-button primary" onClick={onPrint}>Print {kind}</button>}
     </div>
-    <article className={`sales-document-sheet${isWorkOrder ? ' sales-work-order-sheet' : ''}`}>
-      <div className="sales-doc-heading-grid">
+    <article className={`sales-document-sheet${isWorkOrder ? ' sales-work-order-sheet' : ''}${isQuotationOrInvoice ? ' sales-doc-standard-sheet' : ''}`}>
+      <div className={`sales-doc-heading-grid${isQuotationOrInvoice ? ' sales-doc-standard-header' : ''}`}>
         <div className="sales-doc-heading-left">
           <h1>{kind}</h1>
           <PartyDetails title="Bill to:" {...clientDetails} />
@@ -81,20 +97,15 @@ export default function SalesDocument({
           <div className="sales-doc-company-info">
             <div className="sales-doc-company-copy">
               {companyDetails.gstin && <p><strong>GSTIN:</strong> {companyDetails.gstin}</p>}
-              <p className="sales-doc-company-name">{companyDetails.name}</p>
+              <p className="sales-doc-company-name">{isQuotationOrInvoice ? companyDetails.name.toUpperCase() : companyDetails.name}</p>
               {companyDetails.address && <p><strong>Address:</strong><br />{companyDetails.address}</p>}
             </div>
-            <CompanyBrand name={companyDetails.name} />
+            <CompanyBrand name={companyDetails.name} useProvidedLogo={isQuotationOrInvoice} />
           </div>
-          <div className="sales-doc-meta">
-            <strong>{kind} No: {number || 'Draft'}</strong>
-            <span>{kind === 'Invoice' ? 'Invoice Date' : 'Date'}: {formatDocumentDate(date)}</span>
-            {record.dueDate && <span>Due Date: {formatDocumentDate(record.dueDate)}</span>}
-            {record.validUntil && <span>Valid Until: {formatDocumentDate(record.validUntil)}</span>}
-            {record.quotationId && <span>Quotation: {record.quotationId}</span>}
-          </div>
+          {!isQuotationOrInvoice && <div className="sales-doc-meta">{metadata}</div>}
         </div>
       </div>
+      {isQuotationOrInvoice && <div className="sales-doc-meta">{metadata}</div>}
 
       {isWorkOrder ? <div className="sales-doc-work-details">
         <div className="sales-doc-work-title">{record.project || 'Work order'}</div>
@@ -146,7 +157,7 @@ export default function SalesDocument({
         {!isWorkOrder && <span>Thank You</span>}
       </div>}
       {terms && <section className="sales-doc-terms"><h2>Terms and Conditions.</h2><p>{terms}</p></section>}
-      <p className="sales-doc-note">Demo document only. Not a tax invoice, legal agreement, or proof of payment.</p>
+      {!isQuotationOrInvoice && <p className="sales-doc-note">Demo document only. Not a tax invoice, legal agreement, or proof of payment.</p>}
     </article>
   </section>
 }

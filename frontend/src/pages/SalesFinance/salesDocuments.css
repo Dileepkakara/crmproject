@@ -52,6 +52,28 @@
 .sales-doc-terms h2 { margin: 0 0 16px; font-size: 14px; }
 .sales-doc-terms p { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
 .sales-doc-note { margin: 0; padding: 5px 8px; color: #666; font-family: Arial, sans-serif; font-size: 10px; text-align: center; }
+.sales-doc-standard-sheet { border-color: #444; }
+.sales-doc-standard-header { min-height: 218px; grid-template-columns: 33% 67%; }
+.sales-doc-standard-header .sales-doc-heading-left { grid-template-rows: 78px 1fr; }
+.sales-doc-standard-header .sales-doc-company-info { min-height: 218px; padding: 20px 22px; }
+.sales-doc-standard-header .sales-doc-company-name { font-weight: 700; }
+.sales-doc-standard-header .sales-doc-heading-right { display: block; }
+.sales-doc-standard-sheet .sales-doc-meta { min-height: 45px; padding: 7px 20px; border-top: 1px solid #444; }
+.sales-doc-standard-sheet > .sales-doc-meta { position: relative; padding-left: calc(33% + 20px); }
+.sales-doc-standard-sheet > .sales-doc-meta::before { position: absolute; top: 0; bottom: 0; left: 33%; border-left: 1px solid #444; content: ""; }
+.sales-doc-logo { display: block; width: 132px; height: 96px; flex: 0 0 132px; object-fit: contain; object-position: center; }
+.sales-doc-standard-sheet .sales-doc-table { margin-top: 44px; }
+.sales-doc-standard-sheet .sales-doc-table th:first-child, .sales-doc-standard-sheet .sales-doc-table td:first-child { width: 5.5%; }
+.sales-doc-standard-sheet .sales-doc-table th:nth-child(2), .sales-doc-standard-sheet .sales-doc-table td:nth-child(2) { width: 50%; }
+.sales-doc-standard-sheet .sales-doc-table th:nth-child(3), .sales-doc-standard-sheet .sales-doc-table td:nth-child(3) { width: 10%; }
+.sales-doc-standard-sheet .sales-doc-table th:nth-child(4), .sales-doc-standard-sheet .sales-doc-table td:nth-child(4) { width: 17.25%; }
+.sales-doc-standard-sheet .sales-doc-table th:last-child, .sales-doc-standard-sheet .sales-doc-table td:last-child { width: 17.25%; }
+.sales-doc-standard-sheet .sales-doc-bank-sign { min-height: 163px; grid-template-columns: 70% 30%; padding: 10px 8px 4px; border-bottom-color: #444; }
+.sales-doc-standard-sheet .sales-doc-sign-off { min-height: 120px; justify-content: center; }
+.sales-doc-standard-sheet .sales-doc-for { font-size: 18px; }
+.sales-doc-standard-sheet .sales-doc-thanks { align-self: end; margin: 0 0 5px; }
+.sales-doc-standard-sheet .sales-doc-terms { min-height: 100px; padding: 10px 8px; }
+.sales-doc-standard-sheet .sales-doc-terms h2 { margin-bottom: 18px; }
 .sales-doc-work-details { margin-top: 38px; padding: 0 14px; }
 .sales-doc-work-title { padding: 8px; border: 1px solid #5d5d5d; font-size: 18px; font-weight: 700; }
 .sales-doc-work-details > p, .sales-doc-work-details > section { padding: 9px; border: 1px solid #5d5d5d; border-top: 0; }
@@ -126,6 +148,7 @@
 @media (max-width: 480px) {
   .sales-doc-company-info { padding: 12px 8px; }
   .sales-doc-brand { width: 48px; height: 46px; flex-basis: 48px; font-size: 30px; }
+  .sales-doc-logo { width: 90px; height: 68px; flex-basis: 90px; }
   .sales-doc-meta { gap: 4px; }
   .sales-doc-bank-sign { grid-template-columns: 1fr; gap: 14px; }
   .sales-doc-for { justify-self: end; }
@@ -147,4 +170,5 @@
   .sales-document-page.is-printing .sales-doc-heading-grid, .sales-document-page.is-printing .sales-doc-table tr, .sales-document-page.is-printing .sales-doc-bank-sign, .sales-document-page.is-printing .sales-doc-terms, .sales-document-page.is-printing .sales-doc-work-details section { break-inside: avoid; }
   .sales-document-page.is-printing .sales-doc-table th, .sales-document-page.is-printing .sales-doc-table td { border-color: #555 !important; }
   .sales-document-page.is-printing .sales-doc-brand { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  .sales-document-page.is-printing .sales-doc-logo { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
 }
